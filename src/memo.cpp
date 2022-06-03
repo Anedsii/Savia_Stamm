@@ -1,10 +1,14 @@
 #include "DHT22.h"
 #include "infrarojo.h"
-#include "SPI.h"
-#include "SD.h"
+
 #include "FS.h"
 //Crear un archivo
+#include <SPI.h>		// incluye libreria interfaz SPI
+#include <SD.h>			// incluye libreria para tarjetas SD
 
+#define SSpin 10		// Slave Select en pin digital 10
+
+File archivo;			// objeto archivo del tipo File
 //--------Inicializar/Comprobar memoria SD----------------//
 void initmicroSDCard(){
   if(!SD.begin()){
@@ -30,38 +34,22 @@ void initmicroSDCard(){
   uint64_t cardSize = SD.cardSize() / (1024 * 1024);
   Serial.printf("SD Card Size: %lluMB\n", cardSize);
 }
-//Creamos el archivo por si no existiera
-
-
-
-//------------Escribir el archivo-------------------------//
-void writeFile(fs::FS &fs, const char * path, const char * message) {
-  Serial.printf("Writing file: %s\n", path);
-  File file = fs.open(path, FILE_WRITE);
-  if(!file) {
-    Serial.println("Failed to open file for writing");
-    return;
-  }
-  if(file.print(message)) {
-    Serial.println("File written");
-    
+void apertura(){
+  Serial.println("inicializacion correcta");	// inicializacion correcta
+  archivo = SD.open("/datos.csv", FILE_WRITE);	// apertura 
+  if (archivo) {
+    archivo.println("Time,Presencia,ValorPromAnalogTemp,Humedad,Solar");	// escritura en la primera linea del archivo
+    Serial.println("Escribiendo en archivo prueba.txt...");	
+    archivo.close();// cierre del archivo
+    Serial.println("escritura correcta");
   } else {
-    Serial.println("Write failed");
+    Serial.println("error en apertura de prueba.txt");	// texto de falla en apertura de archivo
   }
-  file.close();
 }
-//------------Funcion recibe nombre del archivo y crea uno -----------------// 
- void guardar2(){
-  File dataFile = SD.open("savia.txt");
-  if (!dataFile) {
-      writeFile(SD,String("savia.txt").c_str(), "Output1,Output2 \r\n"); //lista de primera fila declaro 
-}
-  }
 //---------------------Agregar registro en el archivo ------------------------------//
-
 void appendFile(fs::FS &fs, const char * path, const char * message) {
   Serial.printf("Appending to file: %s\n", path);
-  File file = fs.open("savia.txt", FILE_APPEND);
+  File file = fs.open("/datos.csv", FILE_APPEND);
   if(!file) {
     Serial.println("Failed to open file for appending");
     return;
@@ -71,16 +59,13 @@ void appendFile(fs::FS &fs, const char * path, const char * message) {
   } else {
     Serial.println("error al agregar");
   }
-
   file.close();
 }
-
-//---------------- Funcion para loggear y agregar en el documento seleccionado al poner play se activa ------------------------------//
+//----------------------------------------------------------------//
 void logSDCard() {
-    
-  String dataMessage = String(1)+ "," + String(4)  +"\r\n"; //+ variables a mostrar
+  ///Colocar las  variables a escribir "Time,Presencia,ValorPromAnalogTemp,Humedad,Solar en un STRING"
+    String dataMessage = String(1)+ "," + String(1) + String(1)  +"\r\n"; //+ variables a mostrar
     Serial.print("Save data: ");
     Serial.println(dataMessage);
-    appendFile(SD,String("savia.txt").c_str(), dataMessage.c_str());
-
+    appendFile(SD,String("/datos.csv").c_str(), dataMessage.c_str());
 }

@@ -9,6 +9,7 @@ void setup()
   Serial.begin(9600);
   tiempotimer=1000000;
   initmicroSDCard(); //Inicio de memoria SD
+  apertura();
   timerconfig();//configuracion inicial del timercounter
 
   //Pines de salida 
@@ -23,7 +24,7 @@ void loop(){
   tiempo();
   Read_TempHum();
   ir_med();
- // guardar2();
+ 
   //Cambiar frecuencia de muestreo guardado 
   if(ir_m<600){
     bandera=0;
@@ -31,9 +32,7 @@ void loop(){
   if (ir_m>600){
     bandera=1;
   }
-  //logSDCard();
+  logSDCard();
   }
- //Read_TempHum();
- //Cambio timer
- 
+
 }

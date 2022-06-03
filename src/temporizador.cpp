@@ -9,6 +9,7 @@ volatile int tiempotimer;
 hw_timer_t * timer = NULL;
 portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
 int bandera;
+String tiemporeloj;
 
 
 void IRAM_ATTR onTimer() {
@@ -24,7 +25,8 @@ void timerconfig(){
 }
 
 void tiempo(){
-   Serial.println("Tiempo: " + String(horas) + " : " + String(minutos) + " : " + String(segundos));
+   tiemporeloj= String(horas) + " : " + String(minutos) + " : " + String(segundos);
+   Serial.println("Tiempo: " + tiemporeloj);
    portENTER_CRITICAL(&timerMux);
    contador--;
    portEXIT_CRITICAL(&timerMux);

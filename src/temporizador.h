@@ -12,4 +12,6 @@ extern portMUX_TYPE timerMux ;
 extern hw_timer_t * timer;
 extern volatile int tiempotimer;
 extern int bandera;
+extern String tiemporeloj;
+
 #endif
